@@ -1,7 +1,7 @@
 
 # TemplateMatcher
 
-This repository contains a simple C template matching application parallelized with OpenMP.  It uses normalized cross correlation to find matches in a given image to a given template.
+This repository contains a simple C template matching application parallelized with OpenMP.  It uses cross correlation to find matches in a given image to a given template.
 
 
 ## Build
@@ -13,13 +13,12 @@ This application can be built by simply running the ```make``` command from with
 
 The template matching application can be run using the following command.
 
-```./templateMatch <input> <template> <output> <cores> <display>```
+```./templateMatch <input> <template> <cores> <display>```
 
 The parameters that follow apply.
 
 + Input    - a .ppm image upon which to perform the operation.
 + Template - a .ppm image to use as a template.
-+ Output   - a .ppm image to output.
 + Cores    - the number of cores to utilize for this parallel operation.
 + Display  - 0 for timing, 1 for full report, and 2 for best match.
 

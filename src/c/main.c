@@ -24,12 +24,12 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "colorSearch.h"
+#include "templateMatch.h"
 #include "ppmTools.h"
 
 
 // Definitions
-#define NUM_ARGS 6
+#define NUM_ARGS 5
 
 // Main
 int main( int argc, char **argv ) {
@@ -44,7 +44,7 @@ int main( int argc, char **argv ) {
         uint8_t *temp         = NULL;  // Template Pointer - RGB888
   const char    *in           = NULL;  // Input Filename
   const char    *tempFile     = NULL;  // Input Filename
-  const char    *out          = NULL;  // Output Filename
+  //const char    *out          = NULL;  // Output Filename
         uint16_t imageWidth   = 0;     // Image Width
         uint16_t imageHeight  = 0;     // Image Height
         uint16_t tempWidth    = 0;     // Template Width
@@ -59,13 +59,13 @@ int main( int argc, char **argv ) {
         double   imageInEnd    = 0.0;  // Image Input End Time
         double   opStart       = 0.0;  // Operation Start Time
         double   opEnd         = 0.0;  // Operation End Time
-        double   imageOutStart = 0.0;  // Image Output Start Time
-        double   imageOutEnd   = 0.0;  // Image Output End Time
+        //double   imageOutStart = 0.0;  // Image Output Start Time
+        //double   imageOutEnd   = 0.0;  // Image Output End Time
         double   jobEnd        = 0.0;  // Job Clock End Time
   // Final Time Values
         double   imageInTime   = 0.0;  // Image Input and Preparation Time
         double   opTime        = 0.0;  // Operation Execution Time
-        double   imageOutTime  = 0.0;  // Image Output Time
+        //double   imageOutTime  = 0.0;  // Image Output Time
         double   addOverhead   = 0.0;  // Additional Overhead Time
         double   jobTime       = 0.0;  // Total Program Time
 
@@ -74,15 +74,15 @@ int main( int argc, char **argv ) {
     // Parsing Normal Arguments
     in       = argv[1];
     tempFile = argv[2];
-    out      = argv[3];
-    cores    = atoi( argv[4] );
-    display  = atoi( argv[5] );
+    //out      = argv[3];
+    cores    = atoi( argv[3] );
+    display  = atoi( argv[4] );
   // If Argument Number Does Not Fall Into Acceptable Range, Print Usage
   } else {
-    fprintf( stderr, "Usage: %s <input> <template> <output> <cores> <display>\n", argv[0] );
+    fprintf( stderr, "Usage: %s <input> <template> <cores> <display>\n", argv[0] );
     fprintf( stderr, "  Input    - input image .ppm file.\n" );
     fprintf( stderr, "  Template - input template .ppm file.\n" );
-    fprintf( stderr, "  Output   - desired output filename.ppm.\n" );
+    //fprintf( stderr, "  Output   - desired output filename.ppm.\n" );
     fprintf( stderr, "  Cores    - number of cores to utilize for parallel operation\n" );
     fprintf( stderr, "               or zero for a serial baseline run.\n" );
     fprintf( stderr, "  Display  - 0 for timing, 1 for full report, 2 for percents.\n" );
@@ -146,16 +146,17 @@ int main( int argc, char **argv ) {
 
   // Display Match Percentage and Given Criteria
   if( display == 1 ) {
-    fprintf( stdout, "\n%0.2f%% Match at (%$d, %d)\n", matchPercent, matchX, matchY );
+    fprintf( stdout, "\n%0.2f%% Match at (%d, %d)\n", matchPercent, matchX, matchY );
   }
 
-  // Image Write
+  /*/ Image Write
+  // TODO: Leaving in case we write an image with relevant values later...
   if( display == 1 ) {
     fprintf( stdout, "Writing Image...\n" );
   }
   imageOutStart = omp_get_wtime( );
   writePPM( image, out, width, height );
-  imageOutEnd   = omp_get_wtime( );
+  imageOutEnd   = omp_get_wtime( ); //*/
 
   // Final Tasks
   free( image );
@@ -168,9 +169,9 @@ int main( int argc, char **argv ) {
   jobEnd       = omp_get_wtime( );                               // End Full Program Clock
   imageInTime  = imageInEnd  - imageInStart;                     // Calculate Image Input and Preparation Time
   opTime       = opEnd       - opStart;                          // Calculate Operation Time
-  imageOutTime = imageOutEnd - imageOutStart;                    // Calculate Image Output Time
+  //imageOutTime = imageOutEnd - imageOutStart;                  // Calculate Image Output Time
   jobTime      = jobEnd      - jobStart;                         // Calculate Overall Time
-  addOverhead  = jobTime - imageInTime - opTime - imageOutTime;  // Calculate Additional Overhead Time
+  addOverhead  = jobTime - imageInTime - opTime;  // - imageOutTime;  // Calculate Additional Overhead Time
   // Handle Displaying All Timing Data
   if( display == 1 ) {  // Messages only when display is 1.
     fprintf( stdout, "=== Timing Data ===\n  Image In:\t\t" );
@@ -181,15 +182,15 @@ int main( int argc, char **argv ) {
     fprintf( stdout, "%0.7lf ", opTime );
   }
   if( display == 1 ) {
-    fprintf( stdout, "\n  Image Out:\t\t" );
-    fprintf( stdout, "%0.7lf\n", imageOutTime );
-    fprintf( stdout, "  Overhead:\t\t" );
+    //fprintf( stdout, "\n  Image Out:\t\t" );
+    //fprintf( stdout, "%0.7lf\n", imageOutTime );
+    fprintf( stdout, "\n  Overhead:\t\t" );
     fprintf( stdout, "%0.7lf\n", addOverhead );
     fprintf( stdout, "  Total Job Time:\t" );
     fprintf( stdout, "%0.7lf\n\n", jobTime );
   // Or Just Display Resultant Percentages
   } else if( display == 2 ) {
-    fprintf( stdout, "%0.2f%% %d %d", matchPercent, matchX, matchY );
+    fprintf( stdout, "%0.2f%% %d %d\n", matchPercent, matchX, matchY );
   }
   // Define Additional Output Functions with Different Display Values
 
