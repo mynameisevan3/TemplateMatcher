@@ -17,7 +17,7 @@ OBJ_DIR     := obj
 C_NAMES     := main.c templateMatch.c ppmTools.c
 
 # Flags and Libraries
-CFLAGS      := -std=c99 -Wall -Wextra -fopenmp -O3
+CFLAGS      := -std=c99 -Wall -Wextra -fopenmp -O3 -static
 CPPFLAGS    := -I.
 LDFLAGS     := -fopenmp
 LDLIBS      := -lm
